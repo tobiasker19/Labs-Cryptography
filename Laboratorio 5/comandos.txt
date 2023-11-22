@@ -1,0 +1,82 @@
+*****Para el paso 1*****
+-----Crear y correr contenedores-----
+sudo docker build -t cualquiernombre -f archivodockerfile .
+sudo docker run -it cualquiernombre bash
+
+-----Levantar servidor-----
+sudo docker run -it cualquiernombre bash
+service ssh status
+service ssh start
+
+-----Conocer información del servidor-----
+(esto se hace desde el servidor)
+apt-get update
+apt-get install net-tools
+ifconfig
+
+-----Conexion de c1,c2,c3,c4 con s1-----
+ssh test@172.17.0.11
+yes
+test
+ESTA PARTE SE HACE CON EL WIRESHARK CAPTURANDO
+
+*****Para el paso 2*****
+Para correr el contenedor C4:
+sudo docker run --cap-add=NET_RAW --cap-add=NET_ADMIN -it c4 bash
+Instalando todos los paquetes necesarios (esto se hace desde el servidor):
+apt update
+apt install autoconf libssl-dev zlib1g-dev gcc make git vim
+
+Para poder replicar el trafico y modificarlo:
+Link de guia: https://github.com/openssh/openssh-portable
+git clone https://github.com/openssh/openssh-portable
+cd openssh-portable
+ls
+busco archivo version.h
+vim version.h
+donde dice OpenSSH_9.5 se pone OpenSSH_?
+donde dice SSH_VERSION SSH_PORTABLE se borra SSH_PORTABLE
+autoreconf
+./configure
+make
+make install
+/usr/local/sbin/sshd
+
+
+------AHORA REALIZANDO LA CONEXION CON EL ARCHIVO MODIFICADO------
+sudo docker exec -it idcontenedor /bin/bash
+tshark -i lo -w /tmp/capturamod.pcapng
+EN OTRA CONSOLA DONDE ESTE C4
+ssh test@localhost
+sudo docker cp aea65d402c39:/tmp/capturamod.pcapng .
+
+*****Para el paso 3*****
+Para correr el contenedor C4:
+sudo docker run --cap-add=NET_RAW --cap-add=NET_ADMIN -it c4 bash
+Modificaremos el archivo sshd_config
+link ayuda: https://www.ssh.com/academy/ssh/sshd_config
+apt update
+apt install autoconf libssl-dev zlib1g-dev gcc make git vim
+git clone https://github.com/openssh/openssh-portable
+cd openssh-portable
+ls
+vim sshd_config
+--DEL ARCHIVO SE MODIFICA--
+Ciphers aes128-ctr
+HostKeyAlgorithms ecdsa-sha2-nistp256
+KexAlgorithms ecdh-sha2-nistp256
+MACs hmac-sha2-256
+-----------------------------------------
+autoreconf
+./configure
+make
+make install
+/usr/local/sbin/sshd
+
+------AHORA REALIZANDO LA CONEXION CON EL ARCHIVO MODIFICADO------
+sudo docker exec -it idcontenedor /bin/bash
+tshark -i lo -w /tmp/capturapas3.pcapng
+EN OTRA CONSOLA DONDE ESTE C4
+ssh test@localhost
+sudo docker cp idcontenedor:/tmp/capturapas3.pcapng .
+
