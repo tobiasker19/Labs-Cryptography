@@ -18,6 +18,8 @@ ifconfig
 ssh test@172.17.0.11
 yes
 test
+Para C4 es distinto ya que es el mismo contenedor el del servidor que el del cliente:
+
 ESTA PARTE SE HACE CON EL WIRESHARK CAPTURANDO
 
 *****Para el paso 2*****
